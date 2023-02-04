@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/Git-Vdim-Hub/human-resources-tracker#readme",
   "dependencies": {
+    "console.table": "^0.10.0",
     "dotenv": "^16.0.3",
+    "inquirer": "^8.2.4",
     "mysql2": "^3.1.0",
     "mysql2-promise": "^0.1.4"
   }

@@ -1,3 +1,6 @@
+--View All Departments
+SELECT * FROM departments
+
 -- View All Roles
 SELECT roles.id, roles.title, departments.department_name AS department, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id;
 

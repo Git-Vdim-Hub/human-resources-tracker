@@ -26,9 +26,13 @@
 // for main sql code,
 //3. install dependencies (node, inquirer, console.table, mysql2 and .promise() (check npm link in chal readMe using promise wrapper), dotenv)
 
+const inquirer = require('inquirer');
 const mysqlp = require('mysql2/promise');
 const mysql = require('mysql2');
+const cTable = require('console.table');
 require('dotenv').config();
+
+const questions = ['What would you like to do?'];
 
 const db = mysql.createConnection(
    {
@@ -40,6 +44,37 @@ const db = mysql.createConnection(
    console.log ('Connected to hr_db database.')
 );
 
-db.query('SELECT roles.id, roles.title, departments.department_name AS department, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id', function (err, results) {
-   console.log(results);
-});
+askBaselineQuestions = function() {
+   inquirer
+   .prompt([
+      {
+         type: 'list',
+         name: 'nextRequest',
+         message: questions[0],
+         choices: ['view all departments', 'view all roles', 'view all employees', 'add a department', 'add a role', 'add an employee', 'update an employee role']
+      }
+   ])
+   .then((data) =>{
+      if(data.nextRequest === 'view all departments'){
+         db.query('SELECT * FROM departments', function(err, results) {
+            console.table(results);
+            askBaselineQuestions();
+         });
+      } else if(data.nextRequest === 'view all roles'){
+         db.query('SELECT roles.id, roles.title, departments.department_name AS department, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id', function (err, results) {
+            console.table(results);
+            askBaselineQuestions();
+         });
+      } else if(data.nextRequest === 'view all employees'){
+         db.query('SELECT e.id, e.first_name, e.last_name, roles.title, departments.department_name AS department, roles.salary, IFNULL(CONCAT(m.first_name, m.last_name), NULL) AS manager FROM employees e JOIN roles ON e.role_id = roles.id JOIN departments ON roles.department_id = departments.id LEFT JOIN employees m ON m.id = e.manager_id', function(err, results) {
+            console.table(results);
+            askBaselineQuestions();
+         });
+      } else if(data.nextRequest === 'add a department'){
+         return;
+      }
+   })
+}
+
+askBaselineQuestions();
+
