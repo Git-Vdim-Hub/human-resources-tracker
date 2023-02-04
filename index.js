@@ -14,7 +14,7 @@
  1. create databases, create seed data.
  2. set up 1 inquire message that lets you view by employees
     - view all departments SELECT * FROM departments;
-    - view all roles SELECT * FROM roles;
+    - view all roles ref queries.sql
     - view all employees SELECT * FROM employees;
     - add a department
     - add a role

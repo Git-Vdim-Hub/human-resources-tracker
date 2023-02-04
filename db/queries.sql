@@ -9,6 +9,21 @@ FROM roles
 INNER JOIN departments
 ON roles.department_id = departments.id;
 
+-- view all employees
+SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department_name AS department, roles.salary
+FROM employees
+LEFT JOIN roles
+ON employees.role_id = roles.id
+INNER JOIN departments
+ON roles.department_id = departments.id;
+
+
+SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department_name AS department, roles.salary
+FROM employees
+LEFT JOIN roles
+ON employees.role_id = roles.id
+INNER JOIN departments
+ON roles.department_id = departments.id;
 -- ALTER TABLE roles ADD COLUMN department VARCHAR(30);
 
 -- INSERT INTO roles(department_id) VALUES(value)
