@@ -6,24 +6,42 @@ ON roles.department_id = departments.id;
 -- View All Roles
 SELECT roles.id, roles.title, departments.department_name AS department, roles.salary
 FROM roles
-INNER JOIN departments
+JOIN departments
 ON roles.department_id = departments.id;
 
 -- view all employees
-SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department_name AS department, roles.salary
-FROM employees
-LEFT JOIN roles
-ON employees.role_id = roles.id
-INNER JOIN departments
-ON roles.department_id = departments.id;
+-- Credit to https://www.mysqltutorial.org/mysql-self-join/ for the understanding behind declaring a variable "e" & "m" and using IFNULL for displaying employees with no managers above them.
+SELECT e.id, e.first_name, e.last_name, roles.title, departments.department_name AS department, roles.salary, IFNULL(CONCAT(m.first_name, ' ', m.last_name), 'Department Lead') AS manager
+FROM employees e
+JOIN roles
+ON e.role_id = roles.id
+JOIN departments
+ON roles.department_id = departments.id
+LEFT JOIN employees m
+ON m.id = e.manager_id;
 
 
-SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department_name AS department, roles.salary
-FROM employees
-LEFT JOIN roles
-ON employees.role_id = roles.id
-INNER JOIN departments
-ON roles.department_id = departments.id;
+-- Examples from https://www.mysqltutorial.org/mysql-self-join/ reworked
+SELECT 
+    CONCAT(m.last_name, ', ', m.first_name) AS manager
+FROM
+    employees e
+JOIN employees m 
+ON m.id = e.manager_id;
+
+
+SELECT 
+    IFNULL(CONCAT(m.lastname, ', ', m.firstname), 'Top Manager') AS 'Manager',
+    CONCAT(e.lastname, ', ', e.firstname) AS 'Direct report'
+FROM
+    employees e
+LEFT JOIN employees m ON 
+    m.employeeNumber = e.reportsto
+ORDER BY 
+    manager DESC;
+
+
+
 -- ALTER TABLE roles ADD COLUMN department VARCHAR(30);
 
 -- INSERT INTO roles(department_id) VALUES(value)
