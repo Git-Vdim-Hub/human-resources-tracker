@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Git-Vdim-Hub/human-resources-tracker/issues"
   },
-  "homepage": "https://github.com/Git-Vdim-Hub/human-resources-tracker#readme"
+  "homepage": "https://github.com/Git-Vdim-Hub/human-resources-tracker#readme",
+  "dependencies": {
+    "mysql2": "^3.1.0"
+  }
 }
