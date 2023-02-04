@@ -32,7 +32,7 @@ const mysql = require('mysql2');
 const cTable = require('console.table');
 require('dotenv').config();
 
-const questions = ['What would you like to do?'];
+const questions = ['What would you like to do?', "What department would you like to add? "];
 
 const db = mysql.createConnection(
    {
@@ -71,9 +71,31 @@ askBaselineQuestions = function() {
             askBaselineQuestions();
          });
       } else if(data.nextRequest === 'add a department'){
-         return;
+         askDepartmentQuestion();
       }
    })
+}
+
+askDepartmentQuestion = function(){
+   inquirer
+   .prompt([
+      {
+         type: 'input',
+         name: 'depInput',
+         message: questions[1]
+      }
+   ])
+   .then((data) => {
+      db.execute('INSERT INTO departments (department_name) VALUES (?)',[data.depInput], function(err, results, fields) {
+         if(err){
+            console.log(err);
+         }else{
+            console.log(`Added ${data.depInput} to the database`);
+            askBaselineQuestions();
+         }
+      });
+   })
+
 }
 
 askBaselineQuestions();
