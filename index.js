@@ -26,7 +26,8 @@
 // for main sql code,
 //3. install dependencies (node, inquirer, console.table, mysql2 and .promise() (check npm link in chal readMe using promise wrapper), dotenv)
 
-const mysql = require('mysql2/promise');
+const mysqlp = require('mysql2/promise');
+const mysql = require('mysql2');
 require('dotenv').config();
 
 const db = mysql.createConnection(
@@ -38,3 +39,7 @@ const db = mysql.createConnection(
    },
    console.log ('Connected to hr_db database.')
 );
+
+db.query('SELECT roles.id, roles.title, departments.department_name AS department, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id', function (err, results) {
+   console.log(results);
+});

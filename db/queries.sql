@@ -1,13 +1,5 @@
-SELECT departments.department_name AS department, roles.title
-FROM roles
-LEFT JOIN departments
-ON roles.department_id = departments.id;
-
 -- View All Roles
-SELECT roles.id, roles.title, departments.department_name AS department, roles.salary
-FROM roles
-JOIN departments
-ON roles.department_id = departments.id;
+SELECT roles.id, roles.title, departments.department_name AS department, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id;
 
 -- view all employees
 -- Credit to https://www.mysqltutorial.org/mysql-self-join/ for the understanding behind declaring a variable "e" & "m" and using IFNULL for displaying employees with no managers above them.
