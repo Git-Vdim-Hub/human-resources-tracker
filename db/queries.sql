@@ -22,23 +22,23 @@ ON m.id = e.manager_id;
 
 
 -- Examples from https://www.mysqltutorial.org/mysql-self-join/ reworked
-SELECT 
-    CONCAT(m.last_name, ', ', m.first_name) AS manager
-FROM
-    employees e
-JOIN employees m 
-ON m.id = e.manager_id;
+-- SELECT 
+--     CONCAT(m.last_name, ', ', m.first_name) AS manager
+-- FROM
+--     employees e
+-- JOIN employees m 
+-- ON m.id = e.manager_id;
 
 
-SELECT 
-    IFNULL(CONCAT(m.lastname, ', ', m.firstname), 'Top Manager') AS 'Manager',
-    CONCAT(e.lastname, ', ', e.firstname) AS 'Direct report'
-FROM
-    employees e
-LEFT JOIN employees m ON 
-    m.employeeNumber = e.reportsto
-ORDER BY 
-    manager DESC;
+-- SELECT 
+--     IFNULL(CONCAT(m.lastname, ', ', m.firstname), 'Top Manager') AS 'Manager',
+--     CONCAT(e.lastname, ', ', e.firstname) AS 'Direct report'
+-- FROM
+--     employees e
+-- LEFT JOIN employees m ON 
+--     m.employeeNumber = e.reportsto
+-- ORDER BY 
+--     manager DESC;
 
 
 

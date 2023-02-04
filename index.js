@@ -15,7 +15,7 @@
  2. set up 1 inquire message that lets you view by employees
     - view all departments SELECT * FROM departments;
     - view all roles ref queries.sql
-    - view all employees SELECT * FROM employees;
+    - view all employees ref queries.sql
     - add a department
     - add a role
     - add an employee
@@ -26,3 +26,15 @@
 // for main sql code,
 //3. install dependencies (node, inquirer, console.table, mysql2 and .promise() (check npm link in chal readMe using promise wrapper), dotenv)
 
+const mysql = require('mysql2/promise');
+require('dotenv').config();
+
+const db = mysql.createConnection(
+   {
+      host: 'localhost',
+      user: process.env.USER,
+      password: process.env.PASS,
+      database: process.env.DB
+   },
+   console.log ('Connected to hr_db database.')
+);
