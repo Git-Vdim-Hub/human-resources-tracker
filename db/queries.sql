@@ -20,6 +20,9 @@ INSERT INTO departments (department_name) VALUES ('Marketing');
 
 INSERT INTO roles (department_id) VALUES ( SELECT id FROM departments WHERE department_name = 'Marketing');
 
+INSERT INTO roles(title, salary, department_id) VALUES 
+
+
 -- Examples from https://www.mysqltutorial.org/mysql-self-join/ reworked
 -- SELECT 
 --     CONCAT(m.last_name, ', ', m.first_name) AS manager
