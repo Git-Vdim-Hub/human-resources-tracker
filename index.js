@@ -32,11 +32,11 @@ const mysql = require('mysql2');
 const cTable = require('console.table');
 require('dotenv').config();
 
-const questions = ['What would you like to do?', 'What department would you like to add? ', 'What role would you like to add? ', 'What is the salary for this role? ', 'What department would you like this role to be a part of? ', 'What is the employees first name? ', 'What is the employees last name?', 'What is the employees role? ', 'Who is the employees manager? '];
+const questions = ['What would you like to do?', 'What department would you like to add? ', 'What role would you like to add? ', 'What is the salary for this role? ', 'What department would you like this role to be a part of? ', 'What is the employees first name? ', 'What is the employees last name?', 'What is the employees role? ', 'Who is the employees manager? ', 'What employees role do you want to update? ', 'What is the employees new role? '];
 
 var departmentsArray=[];
 var rolesArray=[];
-var employeesArray=[]
+var employeesArray=[];
 
 const db = mysql.createConnection(
    {
@@ -80,6 +80,8 @@ askBaselineQuestions = function() {
          askroleQuestions();
       } else if(data.nextRequest === 'add an employee'){
          askEmployeeQuestions();
+      } else if(data.nextRequest === 'update an employee role'){
+         askUpdatedEmployeeInfo();
       }
    })
 }
@@ -213,7 +215,40 @@ askEmployeeQuestions = function(){
          }
       })
    })
+};
+askUpdatedEmployeeInfo = function(){
+   getRoles();
+   getEmployees();
+   // console.log(employeesArray);
+   inquirer
+   .prompt([
+      {
+         type: 'list',
+         name: 'updateEmployee',
+         message: questions[9],
+         choices: employeesArray,
+      },
+      {
+         type: 'list',
+         name: 'updateRole',
+         message: questions[10],
+         choices: rolesArray,
+      },
+   ])
+   .then((data) =>{
+      console.log(rolesArray.indexOf(data.updateRole)+1);
+      console.log(employeesArray.indexOf(data.updateEmployee)+1);
+      db.execute('UPDATE employees SET role_id = ? WHERE id = ?',[rolesArray.indexOf(data.updateRole)+1, employeesArray.indexOf(data.updateEmployee)+1], function(err, results, fields) {
+         if(err){
+            console.log(err);
+         }else{
+            console.log(`Updated ${data.updateEmployee} role in database`);
+            askBaselineQuestions();
+         }
+      });
+   });
 }
-// getDepartments();
+getEmployees();
+getRoles();
 askBaselineQuestions();
 

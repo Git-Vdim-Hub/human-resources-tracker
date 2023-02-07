@@ -23,6 +23,13 @@ INSERT INTO roles (department_id) VALUES ( SELECT id FROM departments WHERE depa
 INSERT INTO roles(title, salary, department_id) VALUES 
 
 
+ALTER TABLE X DROP CONSTRAINT constraint_fkey;
+
+UPDATE TABLE Y SET col1='', id=2 WHERE id=3;
+
+ALTER TABLE X ADD CONSTRAINT constraint_fkey FOREIGN KEY (X_id) REFERENCES Y(id);
+
+
 -- Examples from https://www.mysqltutorial.org/mysql-self-join/ reworked
 -- SELECT 
 --     CONCAT(m.last_name, ', ', m.first_name) AS manager
