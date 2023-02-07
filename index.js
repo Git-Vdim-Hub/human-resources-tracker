@@ -26,18 +26,20 @@
 // for main sql code,
 //3. install dependencies (node, inquirer, console.table, mysql2 and .promise() (check npm link in chal readMe using promise wrapper), dotenv)
 
+
+//calling all dependencies
 const inquirer = require('inquirer');
 const mysqlp = require('mysql2/promise');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 require('dotenv').config();
-
+//questions for inquirer
 const questions = ['What would you like to do?', 'What department would you like to add? ', 'What role would you like to add? ', 'What is the salary for this role? ', 'What department would you like this role to be a part of? ', 'What is the employees first name? ', 'What is the employees last name?', 'What is the employees role? ', 'Who is the employees manager? ', 'What employees role do you want to update? ', 'What is the employees new role? '];
-
+//arrays for list questions
 var departmentsArray=[];
 var rolesArray=[];
 var employeesArray=[];
-
+// connect to database
 const db = mysql.createConnection(
    {
       host: 'localhost',
@@ -47,7 +49,7 @@ const db = mysql.createConnection(
    },
    console.log ('Connected to hr_db database.')
 );
-
+//recurring question being asked from user
 askBaselineQuestions = function() {
    inquirer
    .prompt([
@@ -58,34 +60,34 @@ askBaselineQuestions = function() {
          choices: ['view all departments', 'view all roles', 'view all employees', 'add a department', 'add a role', 'add an employee', 'update an employee role']
       }
    ])
-   .then((data) =>{
+   .then((data) =>{ //display the departments
       if(data.nextRequest === 'view all departments'){
          db.query('SELECT * FROM departments', function(err, results) {
             console.table(results);
             askBaselineQuestions();
          });
-      } else if(data.nextRequest === 'view all roles'){
+      } else if(data.nextRequest === 'view all roles'){ //display the roles
          db.query('SELECT roles.id, roles.title, departments.department_name AS department, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id', function (err, results) {
             console.table(results);
             askBaselineQuestions();
          });
-      } else if(data.nextRequest === 'view all employees'){
+      } else if(data.nextRequest === 'view all employees'){ //display the employees
          db.query('SELECT e.id, e.first_name, e.last_name, roles.title, departments.department_name AS department, roles.salary, IFNULL(CONCAT(m.first_name, m.last_name), NULL) AS manager FROM employees e JOIN roles ON e.role_id = roles.id JOIN departments ON roles.department_id = departments.id LEFT JOIN employees m ON m.id = e.manager_id', function(err, results) {
             console.table(results);
             askBaselineQuestions();
          });
-      } else if(data.nextRequest === 'add a department'){
+      } else if(data.nextRequest === 'add a department'){ //call add department function
          askDepartmentQuestion();
-      } else if(data.nextRequest === 'add a role'){
+      } else if(data.nextRequest === 'add a role'){ // call add role function
          askroleQuestions();
-      } else if(data.nextRequest === 'add an employee'){
+      } else if(data.nextRequest === 'add an employee'){ // call add employee function
          askEmployeeQuestions();
-      } else if(data.nextRequest === 'update an employee role'){
+      } else if(data.nextRequest === 'update an employee role'){ //call update employee function
          askUpdatedEmployeeInfo();
       }
    })
 }
-
+//adding a department
 askDepartmentQuestion = function(){
    inquirer
    .prompt([
@@ -107,6 +109,7 @@ askDepartmentQuestion = function(){
    })
 
 }
+//get all of the current departments and add them to an array
 getDepartments =function(){
    db.query('SELECT * FROM departments', function(err, results) {
       for(let i=0; i<results.length; i++){
@@ -116,6 +119,7 @@ getDepartments =function(){
       //return departmentsArray;
    });
 }
+//get all potential employee roles
 getRoles = function(){
    db.query('SELECT * FROM roles', function(err, results) {
       for(let i=0; i<results.length; i++){
@@ -125,7 +129,7 @@ getRoles = function(){
       //return rolesArray;
    });
 }
-
+// get all employees
 getEmployees = function(){
    db.query('SELECT * FROM employees', function(err, results) {
       for(let i=0; i<results.length; i++){
@@ -135,7 +139,7 @@ getEmployees = function(){
       //return employeesArray;
    });
 }
-
+// add a new role to the db
 askroleQuestions = function(){
    getDepartments();
    getEmployees();
@@ -170,7 +174,7 @@ askroleQuestions = function(){
       })
    })
 }
-
+//add a new employee to the db
 askEmployeeQuestions = function(){
    getRoles();
    getEmployees();
@@ -205,7 +209,7 @@ askEmployeeQuestions = function(){
          if(employeesArray[i]===data.manager){
             managerIndex=i;
          }
-      };
+      }; //inserts the new employee to the db
       db.execute('INSERT INTO employees(first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)', [data.firstName, data.lastName, rolesArray.indexOf(data.role)+1, managerIndex+1], function(err, results, fields) {
          if(err){
             console.log(err);
@@ -216,6 +220,8 @@ askEmployeeQuestions = function(){
       })
    })
 };
+
+//update employee role
 askUpdatedEmployeeInfo = function(){
    getRoles();
    getEmployees();
@@ -235,7 +241,7 @@ askUpdatedEmployeeInfo = function(){
          choices: rolesArray,
       },
    ])
-   .then((data) =>{
+   .then((data) =>{ // updates employees new role
       console.log(rolesArray.indexOf(data.updateRole)+1);
       console.log(employeesArray.indexOf(data.updateEmployee)+1);
       db.execute('UPDATE employees SET role_id = ? WHERE id = ?',[rolesArray.indexOf(data.updateRole)+1, employeesArray.indexOf(data.updateEmployee)+1], function(err, results, fields) {
@@ -248,7 +254,9 @@ askUpdatedEmployeeInfo = function(){
       });
    });
 }
+//before starting the app gets the current employees and roles into their respective arrays (done this way due to the inquirer issues with mysql2)
 getEmployees();
 getRoles();
+//initializes the app
 askBaselineQuestions();
 

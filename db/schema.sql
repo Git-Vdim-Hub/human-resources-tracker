@@ -1,3 +1,5 @@
+-- sets up the human resources(hr) database for departments, roles and employees tables per customer requirement
+
 DROP DATABASE IF EXISTS hr_db;
 CREATE DATABASE hr_db;
 

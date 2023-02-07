@@ -4,6 +4,8 @@ VALUES ("Sales"),
        ("Finance"),
        ("Legal");
 
+-- initial data input into the database for examples/manipulation
+
 INSERT INTO roles (title, salary, department_id)
 VALUES ("Sales Lead", 100000, 1),
        ("Salesperson", 80000, 1),
